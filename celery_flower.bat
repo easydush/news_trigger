@@ -1,0 +1,1 @@
+celery flower -A news_trigger --address=127.0.0.1 --port=5555
