@@ -62,6 +62,18 @@ class NewsItemDownloader:
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'
         }
 
+    def get_link_to_news_page(self, yandex_news_link):
+        result = requests.get(yandex_news_link, headers=self.__headers)
+        result_page = result.text.encode('utf8')
+        soup = BeautifulSoup(result_page, features='lxml')
+
+        # get title
+        story_name = soup.find('h1', {'class': 'story__head'})
+        # get link
+        news_link = story_name.a['href']
+
+        return news_link
+
     def get_news_from_rss_page(self, rss_yandex_link):
         result = requests.get(rss_yandex_link, headers=self.__headers)
         result_page = result.text.encode('utf8')
@@ -74,7 +86,7 @@ class NewsItemDownloader:
             map(lambda item: NewsItem(
                 title=item.title.text,
                 description=item.description.text,
-                link=item.guid.text,
+                link=self.get_link_to_news_page(item.guid.text),
                 pub_date=item.pubdate.text
             ), items_list)
         )
