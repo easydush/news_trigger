@@ -1,0 +1,1 @@
+celery beat -A news_trigger -l info

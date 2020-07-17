@@ -119,3 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Celery staff
+REDIS_HOST = config('REDIS_HOST')
+REDIS_PORT = config('REDIS_PORT')
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+BROKER_TRANSPORT_OPTIONS = config('BROKER_TRANSPORT_OPTIONS')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
