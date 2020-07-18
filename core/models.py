@@ -59,10 +59,10 @@ class VKSource(models.Model):
 class VKGroup(models.Model):
     name = models.CharField(max_length=200)
     vk_id = models.CharField(max_length=32, primary_key=True, unique=True)
-    description = models.CharField(max_length=300)
+    description = models.CharField(max_length=300, null=True)
     members_count = models.IntegerField()
     verified = models.BooleanField(default=False)
-    site = models.CharField(max_length=200)
+    site = models.CharField(max_length=200, null=True)
     photo_100 = models.URLField()
 
     def __str__(self):
