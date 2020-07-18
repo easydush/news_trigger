@@ -2,8 +2,9 @@ import logging
 
 from django.db import IntegrityError
 
-from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase
+from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, VKPost, VKSource
 from core.site_parser.site_parser import SiteParser
+from core.vk.vk_parser import VKParser
 from core.yandex_data_export.news_item import NewsItemDownloader
 from news_trigger.celery import app
 
@@ -64,3 +65,26 @@ def check_yandex_news_for_trigger_words():
         article.checked = True
         article.save()
         logger.info(f'News: {article} checked')
+
+
+@app.task
+def update_vk_content():
+    parser = VKParser()
+    parser.parse_groups()
+
+
+@app.task
+def check_vk_news_for_trigger_words():
+    posts = VKPost.unchecked.all()
+    # init site parser
+    parser = VKParser()
+    # isis: sorry fot this ^_^
+    # get trigger words
+    # todo: triggers
+    trigger_phrase = TriggerPhrase.objects.all()
+    for post in posts.iterator():
+        #text = post.text
+        post.checked = True
+        post.save()
+        logger.info(f'VK: {post} has been checked')
+
