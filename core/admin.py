@@ -28,12 +28,14 @@ class VKSourceAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
 
+
 @admin.register(VKGroup)
 class VKGroupAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['name', 'id', 'members_count', 'site']
     search_fields = ['name']
+
 
 @admin.register(VKPost)
 class VKPostAdmin(admin.ModelAdmin):
-    list_display = ['owner_id']
-    search_fields = ['owner_id']
+    list_display = ['id', 'owner_id', 'address', 'likes', 'reposts', 'comments', 'checked']
+    search_fields = ['id', 'owner_id', 'pub_date']

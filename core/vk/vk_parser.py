@@ -17,7 +17,8 @@ class VKParser:
                                            lang='ru', group_ids=vk_id,
                                            fields='description,members_count,verified,site,cover')
         response = response[0]
-        new_group = VKGroup(name=response['name'],
+        new_group = VKGroup(id=response['id'],
+                            name=response['name'],
                             vk_id=response['id'],
                             description=response['description'],
                             members_count=response['members_count'],
@@ -31,14 +32,16 @@ class VKParser:
                                      lang='ru', timeout=1000, owner_id='-' + str(source), count=50)
         posts = response['items']
         for post in posts:
-            new_post = VKPost(owner_id=VKGroup.objects.get(vk_id=abs(post['owner_id'])),
-                              pub_date=datetime.fromtimestamp(post['date']),
-                              text=post['text'],
-                              comments=post['comments']['count'],
-                              likes=post['likes']['count'],
-                              reposts=post['reposts']['count'],
-                              checked=False
-                              )
+            new_post = VKPost(
+                id=post['id'],
+                owner=VKGroup.objects.get(vk_id=abs(post['owner_id'])),
+                pub_date=datetime.fromtimestamp(post['date']),
+                text=post['text'],
+                comments=post['comments']['count'],
+                likes=post['likes']['count'],
+                reposts=post['reposts']['count'],
+                checked=False
+            )
             new_post.save()
 
     def parse_groups(self):

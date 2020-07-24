@@ -57,10 +57,10 @@ class VKSource(models.Model):
 
 
 class VKGroup(models.Model):
+    id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=200)
-    vk_id = models.CharField(max_length=32, primary_key=True, unique=True)
     description = models.CharField(max_length=300, null=True)
-    members_count = models.IntegerField()
+    members_count = models.PositiveIntegerField()
     verified = models.BooleanField(default=False)
     site = models.CharField(max_length=200, null=True)
     photo_100 = models.URLField()
@@ -73,15 +73,25 @@ class VKGroup(models.Model):
 
 
 class VKPost(models.Model):
-    owner_id = models.ForeignKey(VKGroup, on_delete=models.CASCADE)
+    id = models.PositiveIntegerField(primary_key=True)
+    owner = models.ForeignKey(VKGroup, on_delete=models.CASCADE)
+    address = models.SlugField(
+        max_length=140,
+        null=True,
+        blank=True
+    )
     pub_date = models.DateField()
     text = models.CharField(max_length=3000)
-    comments = models.IntegerField()
-    likes = models.IntegerField()
-    reposts = models.IntegerField()
+    comments = models.PositiveIntegerField()
+    likes = models.PositiveIntegerField()
+    reposts = models.PositiveSmallIntegerField()
     checked = models.BooleanField(default=False)
     objects = Manager()
     unchecked = UncheckedVKPost()
+
+    def save(self, *args, **kwargs):
+        self.address = f'https://vk.com/{self.owner.id}_{self.id}'
+        super(VKPost, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ('-pub_date',)
