@@ -19,14 +19,14 @@ app.conf.beat_schedule = {
         'task': 'core.tasks.update_news_items',
         # every 5 min
         # todo: update time
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/2'),
     },
     # task to check news for trigger words
     'add-check-news-for-trigger-words': {
         'task': 'core.tasks.check_yandex_news_for_trigger_words',
         # every minute
         # todo: update time
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/2'),
     }
 }
 # Load task modules from all registered Django app configs.

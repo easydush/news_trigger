@@ -38,3 +38,19 @@ class TriggerPhrase(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class TriggerNews(models.Model):
+    title = models.CharField(max_length=300)
+    article_link = models.URLField()
+    last_update = models.DateTimeField(auto_now=True)
+    description = models.TextField(blank=True)
+    rate = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title} [{self.rate}] - [{self.article_link}]'
+
+    class Meta:
+        ordering = ('-last_update',)
+        verbose_name = 'Trigger news'
+        verbose_name_plural = 'Trigger news'

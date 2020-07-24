@@ -2,13 +2,11 @@ import logging
 
 from django.db import IntegrityError
 
-from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase
-from core.site_parser.site_parser import SiteParser
+from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews
+from core.util.SiteParser import SiteParser
+from core.util.ArticleAnalyser import ArticleAnalyser
 from core.yandex_data_export.news_item import NewsItemDownloader
 from news_trigger.celery import app
-import re
-from flashtext import KeywordProcessor
-import pymorphy2
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -41,10 +39,10 @@ def update_news_items():
             )
             try:
                 news.save()
-                logger.info(f'News: {news.title} [{news.hash}] saved')
+                logger.info(f'Added: [{news.hash}] {news.title}')
             except IntegrityError:
                 # handling re-adding news
-                logger.warning(f'News: {news.title} [{news.hash}] already exist')
+                logger.info(f'Exist: [{news.hash}] {news.title}')
 
 
 @app.task
@@ -53,35 +51,31 @@ def check_yandex_news_for_trigger_words():
     news = YandexNewsItem.unchecked.all()[:5]  # all() [:5] for testing
     # init site parser
     parser = SiteParser()
-    keyword_processor = KeywordProcessor()
+    # init analyser
+    analyser = ArticleAnalyser()
+    # get all trigger words
     trigger_phrase = TriggerPhrase.objects.all()
-    # cleaning trigger phrases from punctuation and adding them to keyword processor
-    for t in trigger_phrase:
-        keyword_processor.add_keyword(re.sub(r'\W+', ' ', t.name))
-    morph = pymorphy2.MorphAnalyzer()
+    # add keywords
+    analyser.add_keywords(trigger_phrase)
 
     for article in news.iterator():
-        # get raw article text
+        # get raw article text and article name
         raw_text = parser.get_article_text(article.link)
-        # cleaning the text
-        clean_text = re.sub(r'\W+', ' ', raw_text)
-        clean_name = re.sub(r'\W+', ' ', article.name)
-        # normalizing the text
-        final_text = ''
-        final_name = ''
-        for word in clean_text.split():
-            final_text += morph.parse(word)[0].normal_form
-            final_text += ' '
-        for word in clean_name.split():
-            final_name =+ morph.parse(word)[0].normal_form
-            final_name += ' '
-        # checking the text and article name for trigger words
-        if keyword_processor.extract_keywords(final_text) | keyword_processor.extract_keywords(final_name):
-            # todo: if article has keywords
-        else:
-            # todo: if it doesn't
+        article_name = article.title
+
+        article_keywords_found_list = analyser.check_text(raw_text)
+        article_name_keywords_found_list = analyser.check_text(article_name)
+
+        if article_keywords_found_list or article_name_keywords_found_list:
+            TriggerNews.objects.create(
+                title=article.title,
+                article_link=article.link,
+                description='',
+                rate=0
+            )
+            logger.warning(f'Trigger: [{article.hash}] {article.title}')
 
         # update article
         article.checked = True
         article.save()
-        logger.info(f'News: {article} checked')
+        logger.info(f'Checked: [{article.hash}] {article.title}')
