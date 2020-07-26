@@ -30,3 +30,4 @@ vk==2.0.2
 zipp==3.1.0
 flashtext==2.7
 pymorphy2==0.8
+python-decouple==3.3
