@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews
+from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews, VKSource, VKGroup, VKPost
 
 
 @admin.register(YandexNewsTopic)
@@ -29,3 +29,21 @@ class TriggerNewsAdmin(admin.ModelAdmin):
     list_filter = ['last_update', 'rate']
     search_fields = ['title', 'description']
     ordering = ['last_update']
+
+
+@admin.register(VKSource)
+class VKSourceAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    search_fields = ['name']
+
+
+@admin.register(VKGroup)
+class VKGroupAdmin(admin.ModelAdmin):
+    list_display = ['name', 'id', 'members_count', 'site']
+    search_fields = ['name']
+
+
+@admin.register(VKPost)
+class VKPostAdmin(admin.ModelAdmin):
+    list_display = ['id', 'owner_id', 'address', 'likes', 'reposts', 'comments', 'checked']
+    search_fields = ['id', 'owner_id', 'pub_date']

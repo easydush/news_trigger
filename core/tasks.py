@@ -2,9 +2,10 @@ import logging
 
 from django.db import IntegrityError
 
-from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews
+from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews, VKPost
 from core.util.SiteParser import SiteParser
 from core.util.ArticleAnalyser import ArticleAnalyser
+from core.vk.vk_parser import VKParser
 from core.yandex_data_export.news_item import NewsItemDownloader
 from news_trigger.celery import app
 
@@ -79,3 +80,33 @@ def check_yandex_news_for_trigger_words():
         article.checked = True
         article.save()
         logger.info(f'Checked: [{article.hash}] {article.title}')
+
+@app.task
+def update_vk_content():
+    parser = VKParser()
+    parser.parse_groups()
+
+
+@app.task
+def check_vk_news_for_trigger_words():
+    posts = VKPost.unchecked.all()
+    analyser = ArticleAnalyser()
+    # get all trigger words
+    trigger_phrase = TriggerPhrase.objects.all()
+    # add keywords
+    analyser.add_keywords(trigger_phrase)
+    for post in posts.iterator():
+        text = post.text
+        article_keywords_found_list = analyser.check_text(text)
+
+        if article_keywords_found_list:
+            TriggerNews.objects.create(
+                title=post.id,
+                article_link=post.address,
+                description='',
+                rate=0
+            )
+            logger.warning(f'Trigger: {post.id}')
+        post.checked = True
+        post.save()
+        logger.info(f'VK: {post.id} has been checked')
