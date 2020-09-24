@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import hashlib
 
+from core.util.SiteParser import SiteParser
+
 
 class NewsItem:
     """
@@ -52,30 +54,38 @@ class NewsItem:
         return f'{self.__title} - [{self.__pub_date}]  - [{self.__hash}]'
 
 
-class NewsItemDownloader:
+class NewsItemDownloader(SiteParser):
     """
     Class to download news from rss page
     """
 
     def __init__(self):
-        self.__headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'
-        }
+        super(NewsItemDownloader, self).__init__()
+        self.__recursion_depth = 5
 
-    def get_link_to_news_page(self, yandex_news_link):
-        result = requests.get(yandex_news_link, headers=self.__headers)
+    def get_link_to_news_page(self, yandex_news_link, recursion_step=0):
+        result = requests.get(yandex_news_link, headers=self._headers)
         result_page = result.text.encode('utf8')
         soup = BeautifulSoup(result_page, features='lxml')
+        # init news link
+        try:
+            # get title
+            story_name = soup.find('h1', {'class': 'story__head'})
+            # get link
+            news_link = story_name.find('a')['href']
 
-        # get title
-        story_name = soup.find('h1', {'class': 'story__head'})
-        # get link
-        news_link = story_name.a['href']
-
+            # new way
+            # doc_content = soup.find('div', {'class': 'story__main'})
+            # news_link = doc_content.a['href']
+        except AttributeError:
+            if recursion_step < self.__recursion_depth:
+                news_link = self.get_link_to_news_page(yandex_news_link, recursion_step + 1)
+            else:
+                news_link = yandex_news_link
         return news_link
 
     def get_news_from_rss_page(self, rss_yandex_link):
-        result = requests.get(rss_yandex_link, headers=self.__headers)
+        result = requests.get(rss_yandex_link, headers=self._headers)
         result_page = result.text.encode('utf8')
         soup = BeautifulSoup(result_page, features='lxml')
 
