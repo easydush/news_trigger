@@ -10,10 +10,7 @@ class ArticleAnalyser:
         self._morph = MorphAnalyzer()
 
     def add_keywords(self, trigger_words):
-        map(lambda word: self._keyword_processor.add_keyword(
-            self.clean_text(word.name)),
-            trigger_words
-            )
+        self._keyword_processor.add_keywords_from_list(list(trigger_word.name for trigger_word in trigger_words))
 
     def clean_text(self, text):
         return re.sub(r'\W+', ' ', text)
