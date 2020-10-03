@@ -1,10 +1,7 @@
 import datetime
 import hashlib
-
 from django.test import TestCase
-
 from core.models import TriggerPhrase
-
 from core.util.ArticleAnalyser import ArticleAnalyser
 from core.yandex_data_export.news_item import NewsItemDownloader, NewsItem
 from core.yandex_data_export.news_topics import YandexNewsTopics
@@ -25,6 +22,12 @@ class TestTextAnalysis(TestCase):
         self.assertEqual(self.ARTICLE_ANALYSER.get_word_with_normal_form('Розы'), 'роза')
         self.assertEqual(self.ARTICLE_ANALYSER.get_word_with_normal_form('Делают'), 'делать')
 
+
+    def test_checking_text(self):
+        TriggerPhrase.objects.create(name='КФУ')
+        self.ARTICLE_ANALYSER.add_keywords(TriggerPhrase.objects.all())
+        self.assertEqual(
+            self.ARTICLE_ANALYSER.check_text('день рождения КФУ'), ['КФУ'])
 
 class YandexNewsTopicsTest(TestCase):
     def setUp(self):
@@ -60,3 +63,4 @@ class NewsItemTest(TestCase):
         self.assertEqual(news_item.hash, hashlib.md5(
             (news_item.title + news_item.link + news_item.pub_date.__str__()).encode()
         ).hexdigest())
+
