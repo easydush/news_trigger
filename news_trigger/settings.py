@@ -14,6 +14,8 @@ import os
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.urls import reverse_lazy
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
+    'user.apps.UserConfig',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Celery staff
 REDIS_HOST = config('REDIS_HOST')
@@ -126,3 +131,7 @@ REDIS_PORT = config('REDIS_PORT')
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')
 BROKER_TRANSPORT_OPTIONS = config('BROKER_TRANSPORT_OPTIONS')
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
+
+AUTH_USER_MODEL = 'user.User'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
