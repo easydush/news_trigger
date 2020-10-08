@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'core.apps.CoreConfig',
     'user.apps.UserConfig',
     'crispy_forms',
@@ -135,3 +136,4 @@ CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
 AUTH_USER_MODEL = 'user.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
+LOGIN_REDIRECT_URL = reverse_lazy('core:home')

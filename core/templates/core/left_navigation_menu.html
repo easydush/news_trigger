@@ -1,0 +1,48 @@
+<div class="leftMenu">
+    <div class="leftMenuBlock1">
+        <h1 class="p-2">{{ request.user.get_full_name }}</h1>
+    </div>
+    <div class="LeftMenuBlock2">
+        <a class="navigation" href="">
+            <div class="leftMenuItem {% if main_page %}selected{% endif %}"><i class="fab fa-accusoft"></i>
+                Главная страница
+            </div>
+        </a>
+
+        <a class="navigation" href="">
+            <div class="leftMenuItem {% if news_page %} selected{% endif %}"><i class="fas fa-newspaper"></i>
+                Новости
+            </div>
+        </a>
+
+
+        <a class="navigation" href="">
+            <div class="leftMenuItem {% if key_words_page %} selected{% endif %}"><i class="fas fa-th-list"></i>
+                Ключевые слова
+            </div>
+        </a>
+
+        <a class="navigation" href="">
+            <div class="leftMenuItem {% if stat_page %} selected {% endif %}"><i class="fa fa-line-chart"></i>
+                Статистика
+            </div>
+        </a>
+
+    </div>
+
+
+    <div class="LeftMenuBlock3">
+        <a href="">
+            <div class="leftMenuItem {% if settings_page %} selected {% endif %}"><i class="fas fa-cog"></i>
+                Настройки
+            </div>
+        </a>
+
+
+        <a href="{% url 'user:logout' %}">
+            <div class="leftMenuItem"><i class="fas fa-sign-out-alt"></i>
+                Выход
+            </div>
+        </a>
+    </div>
+</div>
