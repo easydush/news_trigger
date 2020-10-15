@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    Главная страница
+{% endblock %}
+{% block container %}
+    {% load humanize %}
+    <div class="main" id="main">
+
+        {% for article in object_list %}
+            <div class="shadow p-4 m-4 news-block rounded">
+                <h3 class="font-weight-normal">{{ article.title }}</h3>
+                <h5><a href="{{ article.article_link }}">Ссылка на статью</a></h5>
+                <p>{{ article.last_update }}</p>
+                <div class="d-flex" style="height: 20px">
+                    <p class="yandex-circle mr-2"></p>
+                    <p>Яндекс новости</p>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="pagination shadow p-4 m-4 pt-3 mt-3 news-block rounded">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="border rounded btn btn-outline-dark">1</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="border rounded btn btn-outline-dark">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    <a href="" class="border rounded btn btn-outline-primary">{{ page_obj.number }}</a>
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="border rounded btn btn-outline-dark">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}"
+                       class="border rounded btn btn-outline-dark">{{ page_obj.paginator.num_pages }}</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    {% include 'core/right_navigation_menu.html' %}
+{% endblock %}
