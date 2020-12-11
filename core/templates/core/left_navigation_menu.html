@@ -16,7 +16,7 @@
         </a>
 
 
-        <a class="navigation" href="">
+        <a class="navigation" href="{% url 'core:key_words' %}">
             <div class="leftMenuItem {% if key_words_page %} selected{% endif %}"><i class="mr-3 fas fa-th-list"></i>
                 Ключевые слова
             </div>
@@ -30,8 +30,8 @@
 
     </div>
     <div class="LeftMenuBlock3">
-        <a href="">
-            <div class="leftMenuItem {% if settings_page %} selected {% endif %}"><i class="mr-3 fa fa-yahoo"></i>
+        <a href="{% url 'core:yandex_source' %}">
+            <div class="leftMenuItem {% if yandex_source %} selected {% endif %}"><i class="mr-3 fa fa-yahoo"></i>
                 Яндекс Новости
             </div>
         </a>

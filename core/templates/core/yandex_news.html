@@ -1,21 +1,16 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-    Главная страница
+    Яндекс новости
 {% endblock %}
 {% block container %}
     {% load humanize %}
     <div class="main" id="main">
 
-        {% for article in object_list %}
+        {% for source in object_list %}
             <div class="shadow p-3 m-4 news-block rounded">
-                <h3 class="font-weight-normal">{{ article.title }}</h3>
-                <h5><a href="{{ article.article_link }}">Ссылка на статью</a></h5>
-                <p>{{ article.last_update }}</p>
-                <div class="d-flex" style="height: 20px">
-                    <p class="yandex-circle mr-2"></p>
-                    <p>Яндекс новости</p>
-                </div>
+                <h5 class="font-weight-normal">{{ source.name }}</h5>
+                <p><a href="{{ source.rss_url }}">Ссылка на источник</a></p>
             </div>
         {% endfor %}
 
@@ -38,6 +33,4 @@
             </span>
         </div>
     </div>
-
-    {% include 'core/right_navigation_menu.html' %}
 {% endblock %}
