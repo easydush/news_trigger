@@ -55,7 +55,7 @@ def check_yandex_news_for_trigger_words():
     # init analyser
     analyser = ArticleAnalyser()
     # get all trigger words
-    trigger_phrase = TriggerPhrase.objects.all()
+    trigger_phrase = TriggerPhrase.objects.filter(is_active=True)
     # add keywords
     analyser.add_keywords(trigger_phrase)
 
@@ -92,7 +92,7 @@ def check_vk_news_for_trigger_words():
     posts = VKPost.unchecked.all()
     analyser = ArticleAnalyser()
     # get all trigger words
-    trigger_phrase = TriggerPhrase.objects.all()
+    trigger_phrase = TriggerPhrase.objects.filter(is_active=True)
     # add keywords
     analyser.add_keywords(trigger_phrase)
     for post in posts.iterator():
