@@ -13,7 +13,7 @@
                     <input class="form-check-input" type="checkbox" id="key-word-{{ word.id }}"
                             {% if word.is_active %} checked=true {% endif %} data-id={{ word.id }}>
                     <label class="form-check-label font-weight-normal mx-2"
-                           for="key-word-{{ word.id }}">{{ word }}</label>
+                           for="key-word-{{ word.id }}"><a href="{% url 'core:news' %}?filter_word={{ word.name }}">{{ word }}</a></label>
                 </div>
             </div>
         {% endfor %}

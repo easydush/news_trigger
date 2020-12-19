@@ -180,3 +180,7 @@ body {
 .custom-switch.custom-switch-md .custom-control-input:checked ~ .custom-control-label::after {
     transform: translateX(calc(1.5rem - 0.25rem));
 }
+
+.news_type_text {
+    color: black;
+}

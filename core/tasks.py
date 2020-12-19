@@ -1,6 +1,9 @@
 import logging
+from functools import reduce
+from itertools import chain
 
 from django.db import IntegrityError
+from django.db.models import Q
 
 from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews, VKPost
 from core.util.SiteParser import SiteParser
@@ -8,6 +11,7 @@ from core.util.ArticleAnalyser import ArticleAnalyser
 from core.vk.vk_parser import VKParser
 from core.yandex_data_export.news_item import NewsItemDownloader
 from news_trigger.celery import app
+from operator import or_
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -49,7 +53,7 @@ def update_news_items():
 @app.task
 def check_yandex_news_for_trigger_words():
     # todo: take all unchecked news
-    news = YandexNewsItem.unchecked.all()[:5]  # all() [:5] for testing
+    news = YandexNewsItem.unchecked.all()[:10]  # all() [:5] for testing
     # init site parser
     parser = SiteParser()
     # init analyser
@@ -66,20 +70,35 @@ def check_yandex_news_for_trigger_words():
 
         article_keywords_found_list = analyser.check_text(raw_text)
         article_name_keywords_found_list = analyser.check_text(article_name)
-
         if article_keywords_found_list or article_name_keywords_found_list:
-            TriggerNews.objects.create(
+            trigger_news = TriggerNews(
                 title=article.title,
                 article_link=article.link,
                 description='',
-                rate=0
+                rate=0,
+                news_type=TriggerNews.YANDEX
             )
-            logger.warning(f'Trigger: [{article.hash}] {article.title}')
+            trigger_news.save()
+            if article_keywords_found_list:
+                article_words = TriggerPhrase.objects.filter(
+                    reduce(or_, [Q(name=word) for word in article_keywords_found_list]))
+                for word in article_words:
+                    trigger_news.trigger_word.add(word)
+            if article_name_keywords_found_list:
+                article_name_words = TriggerPhrase.objects.filter(
+                    reduce(or_, [Q(name=word) for word in article_name_keywords_found_list]))
+                for word in article_name_words:
+                    trigger_news.trigger_word.add(word)
+            trigger_news.save()
+            print(trigger_news.trigger_word)
+
+        logger.warning(f'Trigger: [{article.hash}] {article.title}')
 
         # update article
         article.checked = True
         article.save()
         logger.info(f'Checked: [{article.hash}] {article.title}')
+
 
 @app.task
 def update_vk_content():
@@ -98,13 +117,13 @@ def check_vk_news_for_trigger_words():
     for post in posts.iterator():
         text = post.text
         article_keywords_found_list = analyser.check_text(text)
-
+        print(article_keywords_found_list)
         if article_keywords_found_list:
             TriggerNews.objects.create(
                 title=post.id,
                 article_link=post.address,
                 description='',
-                rate=0
+                news_type=TriggerNews.VK
             )
             logger.warning(f'Trigger: {post.id}')
         post.checked = True

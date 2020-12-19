@@ -33,6 +33,18 @@ class NewsView(LoginRequiredMixin, ListView):
         context_data['news_page'] = True
         return context_data
 
+    def get_queryset(self):
+        queryset = TriggerNews.objects.all()
+        filter_word = self.request.GET.get('filter_word', None)
+        if filter_word:
+            queryset = queryset.filter(trigger_word__name=filter_word)
+
+        filter_news_type = self.request.GET.get('filter_news_type', None)
+        if filter_news_type:
+            queryset = queryset.filter(news_type__in=filter_news_type.split(','))
+
+        return queryset
+
 
 class KeyWords(LoginRequiredMixin, ListView):
     """

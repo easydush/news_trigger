@@ -9,6 +9,6 @@ urlpatterns = [
     path('key-words/', KeyWords.as_view(), name='key_words'),
     path('yandex-source/', YandexNewsSource.as_view(), name='yandex_source'),
 
-    #ajax
+    # ajax
     path('toggle_active_keyword/', ToggleActiveKeyWorld.as_view(), name='toggle_active_keyword')
 ]

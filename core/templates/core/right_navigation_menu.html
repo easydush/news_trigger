@@ -5,35 +5,41 @@
 
             <div class="rightMenuItem">
                 <span class="blue m-2 mb-3"><i class="fas fa-font" style="margin-right:1em;"></i> Источники</span>
-                <div class="form-group mt-2 d-flex flex-wrap" style="padding-top:0.6em;">
-                    <div class="custom-control custom-switch custom-switch-md">
-                        <input type="checkbox" class="custom-control-input" id="customSwitch4" checked>
-                        <label class="custom-control-label" for="customSwitch4">Яндекс Новости</label>
+                <div class="form-group mt-2" style="padding: 0.6em 0.2em">
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?filter_news_type=0">Яндекс Новости</a>
+                        </p>
                     </div>
-                    <div class="custom-control custom-switch custom-switch-md">
-                        <input type="checkbox" class="custom-control-input" id="customSwitch5" checked>
-                        <label class="custom-control-label" for="customSwitch5">Вконтакте</label>
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?filter_news_type=1">Вконтакте</a></p>
+                    </div>
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?filter_news_type=0,1">Все</a></p>
                     </div>
                 </div>
             </div>
 
             <div class="rightMenuItem">
                 <span class="blue"><i class="fas fa-clock" style="margin-right:1em;"></i> Время</span>
-                <div class="form-group mt-2" style="padding-top:0.6em;">
-                    <select class="form-control" id="colorsSelect" style="">
-                        <option>Сначала новые</option>
-                        <option>Сначала старые</option>
-                    </select>
+                <div class="form-group mt-2" style="padding: 0.6em 0.2em">
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?order=">Сначала новые</a></p>
+                    </div>
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?order=">Сначала старые</a></p>
+                    </div>
                 </div>
             </div>
 
             <div class="rightMenuItem">
                 <span class="blue"><i class="fas fa-exclamation" style="margin-right:1em;"></i> Важность</span>
-                <div class="form-group mt-2" style="padding-top:0.6em;">
-                    <select class="form-control" id="colorsSelect" style="">
-                        <option>Сначала важные</option>
-                        <option>Сначала неважные</option>
-                    </select>
+                <div class="form-group mt-2" style="padding: 0.6em 0.2em">
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?priority=">Сначала важные</a></p>
+                    </div>
+                    <div>
+                        <p><a class="news_type_text" href="{% url 'core:news' %}?priority=">Сначала неважные</a></p>
+                    </div>
                 </div>
             </div>
 
