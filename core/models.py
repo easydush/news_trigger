@@ -35,20 +35,29 @@ class YandexNewsItem(models.Model):
 
 class TriggerPhrase(models.Model):
     name = models.CharField(max_length=300, unique=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
 
 
 class TriggerNews(models.Model):
+    YANDEX = 0
+    VK = 1
+    NEWS_TYPE_CHOICES = (
+        (YANDEX, 0),
+        (VK, 1)
+    )
     title = models.CharField(max_length=300)
     article_link = models.URLField()
     last_update = models.DateTimeField(auto_now=True)
     description = models.TextField(blank=True)
     rate = models.PositiveIntegerField(default=0)
+    trigger_word = models.ManyToManyField(TriggerPhrase)
+    news_type = models.IntegerField(choices=NEWS_TYPE_CHOICES, default=YANDEX)
 
     def __str__(self):
-        return f'{self.title} [{self.rate}] - [{self.article_link}]'
+        return f'{self.title} [{self.rate}] [type - {self.news_type}]- [{self.article_link}]'
 
     class Meta:
         ordering = ('-last_update',)

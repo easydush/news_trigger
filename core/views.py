@@ -1,5 +1,8 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.views import View
 from django.views.generic import TemplateView, ListView
 
 from core.models import TriggerNews, TriggerPhrase, YandexNewsTopic
@@ -30,6 +33,18 @@ class NewsView(LoginRequiredMixin, ListView):
         context_data['news_page'] = True
         return context_data
 
+    def get_queryset(self):
+        queryset = TriggerNews.objects.all()
+        filter_word = self.request.GET.get('filter_word', None)
+        if filter_word:
+            queryset = queryset.filter(trigger_word__name=filter_word)
+
+        filter_news_type = self.request.GET.get('filter_news_type', None)
+        if filter_news_type:
+            queryset = queryset.filter(news_type__in=filter_news_type.split(','))
+
+        return queryset
+
 
 class KeyWords(LoginRequiredMixin, ListView):
     """
@@ -58,3 +73,19 @@ class YandexNewsSource(LoginRequiredMixin, ListView):
         context_data = super().get_context_data(**kwargs)
         context_data['yandex_source'] = True
         return context_data
+
+
+class ToggleActiveKeyWorld(LoginRequiredMixin, View):
+    """
+    Toggle trigger word
+    """
+    def post(self, request):
+        if request.is_ajax():
+            word_id = request.POST.get('word_id', None)
+            is_active = request.POST.get('is_active', None)
+            key_word = TriggerPhrase.objects.get(id=word_id)
+            key_word.is_active = is_active
+            key_word.save()
+
+            data = {'status': 'ok'}
+            return HttpResponse(json.dumps(data), content_type='application/json')

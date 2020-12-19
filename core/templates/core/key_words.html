@@ -9,7 +9,12 @@
 
         {% for word in object_list %}
             <div class="shadow p-3 m-4 news-block rounded">
-                <h5 class="font-weight-normal">{{ word }}</h5>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="key-word-{{ word.id }}"
+                            {% if word.is_active %} checked=true {% endif %} data-id={{ word.id }}>
+                    <label class="form-check-label font-weight-normal mx-2"
+                           for="key-word-{{ word.id }}"><a href="{% url 'core:news' %}?filter_word={{ word.name }}">{{ word }}</a></label>
+                </div>
             </div>
         {% endfor %}
 
@@ -32,5 +37,37 @@
             </span>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            //add ajax stuff
+            {% include 'core/includes/ajax_setup.html' %}
+
+            $('.form-check-input').click(function (event) {
+                event.stopPropagation();
+                const key_word_id = $(this).attr('data-id');
+                const is_active = $(this).is(':checked') ? 'True' : 'False';
+
+                const data = {
+                    'word_id': key_word_id,
+                    'is_active': is_active,
+                };
+
+                $.ajax({
+                    url: '{% url 'core:toggle_active_keyword' %}',
+                    method: 'POST',
+                    data: data,
+                    content_type: 'application/json',
+                    type: 'json',
+                    success: (data) => console.log(data),
+                    error: (data) => console.log(data),
+                });
+
+
+            });
+        });
+
+
+    </script>
 
 {% endblock %}

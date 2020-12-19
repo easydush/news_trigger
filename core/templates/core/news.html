@@ -13,8 +13,16 @@
                 <h5><a href="{{ article.article_link }}">Ссылка на статью</a></h5>
                 <p>{{ article.last_update }}</p>
                 <div class="d-flex" style="height: 20px">
-                    <p class="yandex-circle mr-2"></p>
-                    <p>Яндекс новости</p>
+                    <p class="{% if article.news_type == 0 %}
+                        yandex-circle
+                    {% else %}
+                        vk-circle
+                    {% endif %} mr-2"></p>
+                    <p>{% if article.news_type == 0 %}
+                        Яндекс новости
+                    {% else %}
+                        Вконтакте
+                    {% endif %} </p>
                 </div>
             </div>
         {% endfor %}
