@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import Manager
 
+MAX_LENGTH = 255
+
 
 class UncheckedYandexNewsItem(models.Manager):
     def get_queryset(self):
@@ -71,7 +73,7 @@ class UncheckedVKPost(models.Manager):
 
 
 class VKSource(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=MAX_LENGTH)
     vk_id = models.CharField(max_length=32, primary_key=True, unique=True)
 
     def __str__(self):
@@ -82,13 +84,13 @@ class VKSource(models.Model):
 
 
 class VKGroup(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=200)
-    description = models.CharField(max_length=300, null=True)
+    vk_id = models.IntegerField(null=True, unique=True)
+    name = models.CharField(max_length=MAX_LENGTH)
+    description = models.TextField(blank=True, null=True)
     members_count = models.PositiveIntegerField()
     verified = models.BooleanField(default=False)
-    site = models.CharField(max_length=200, null=True)
-    photo_100 = models.URLField()
+    site = models.CharField(max_length=MAX_LENGTH, null=True)
+    photo_100 = models.CharField(max_length=MAX_LENGTH)
 
     def __str__(self):
         return f'{self.name} - [{self.vk_id}]'
@@ -101,12 +103,12 @@ class VKPost(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     owner = models.ForeignKey(VKGroup, on_delete=models.CASCADE)
     address = models.SlugField(
-        max_length=140,
+        max_length=MAX_LENGTH,
         null=True,
         blank=True
     )
     pub_date = models.DateField()
-    text = models.CharField(max_length=3000)
+    text = models.TextField(blank=True, null=True)
     comments = models.PositiveIntegerField()
     likes = models.PositiveIntegerField()
     reposts = models.PositiveSmallIntegerField()

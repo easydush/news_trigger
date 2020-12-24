@@ -4,7 +4,9 @@ import vk
 from decouple import config
 from core.models import VKGroup, VKPost, VKSource
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 class VKParser:
     def __init__(self):
@@ -17,20 +19,22 @@ class VKParser:
                                            lang='ru', group_ids=vk_id,
                                            fields='description,members_count,verified,site,cover')
         response = response[0]
-        new_group = VKGroup(id=response['id'],
-                            name=response['name'],
-                            vk_id=response['id'],
-                            description=response['description'],
-                            members_count=response['members_count'],
-                            verified=response['verified'],
-                            site=response['site'],
-                            photo_100=response['photo_100'])
+        new_group, created = VKGroup.objects.update_or_create(
+                                                              name=response['name'],
+                                                              vk_id=response['id'],
+                                                              description=response['description'],
+                                                              members_count=response['members_count'],
+                                                              verified=response['verified'],
+                                                              site=response['site'],
+                                                              photo_100=response['photo_100'])
         new_group.save()
         logger.info(f'Info about {new_group.name} has been updated successfully')
+        return new_group
 
     def parse_posts(self, source_id):
-        response = self.api.wall.get(access_token=self.ACCESS_TOKEN, v='5.35',
-                                     lang='ru', timeout=1000, owner_id='-' + str(source_id), count=50)
+        response = self.api.wall.get(access_token=self.ACCESS_TOKEN, v='5.35', filter='owner', extended='1',
+                                     lang='ru', owner_id=f'-{source_id}', count=10)
+
         posts = response['items']
         for post in posts:
             new_post = VKPost(
@@ -51,6 +55,6 @@ class VKParser:
         # iterating sources
         for group in groups:
             # updating group info
-            self.parse_group(group['vk_id'])
+            updated = self.parse_group(group['vk_id'])
             # updating posts
-            self.parse_posts(group['vk_id'])
+            self.parse_posts(updated.vk_id)

@@ -104,6 +104,7 @@ def check_yandex_news_for_trigger_words():
 def update_vk_content():
     parser = VKParser()
     parser.parse_groups()
+    logger.info(f'Updated VK groups')
 
 
 @app.task
