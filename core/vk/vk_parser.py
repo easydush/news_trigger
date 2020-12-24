@@ -19,21 +19,30 @@ class VKParser:
                                            lang='ru', group_ids=vk_id,
                                            fields='description,members_count,verified,site,cover')
         response = response[0]
-        new_group, created = VKGroup.objects.update_or_create(
-                                                              name=response['name'],
-                                                              vk_id=response['id'],
-                                                              description=response['description'],
-                                                              members_count=response['members_count'],
-                                                              verified=response['verified'],
-                                                              site=response['site'],
-                                                              photo_100=response['photo_100'])
-        new_group.save()
-        logger.info(f'Info about {new_group.name} has been updated successfully')
-        return new_group
+        try:
+            group = VKGroup.objects.get(vk_id=response['id'])
+            group.name = response['name']
+            group.vk_id = response['id']
+            group.description = response['description']
+            group.members_count = response['members_count']
+            group.verified = response['verified']
+            group.site = response['site']
+            group.photo_100 = response['photo_100']
+        except VKGroup.DoesNotExist:
+            group = VKGroup.objects.create(name=response['name'],
+                                           vk_id=response['id'],
+                                           description=response['description'],
+                                           members_count=response['members_count'],
+                                           verified=response['verified'],
+                                           site=response['site'],
+                                           photo_100=response['photo_100'])
+        group.save()
+        logger.info(f'Info about {group.name} has been updated successfully')
+        return group
 
     def parse_posts(self, source_id):
         response = self.api.wall.get(access_token=self.ACCESS_TOKEN, v='5.35', filter='owner', extended='1',
-                                     lang='ru', owner_id=f'-{source_id}', count=10)
+                                     lang='ru', owner_id=f'-{source_id}', count=50)
 
         posts = response['items']
         for post in posts:

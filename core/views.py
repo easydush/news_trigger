@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.generic import TemplateView, ListView
 
-from core.models import TriggerNews, TriggerPhrase, YandexNewsTopic
+from core.models import TriggerNews, TriggerPhrase, YandexNewsTopic, VKGroup
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
@@ -75,10 +75,26 @@ class YandexNewsSource(LoginRequiredMixin, ListView):
         return context_data
 
 
+class VKNewsSource(LoginRequiredMixin, ListView):
+    """
+    Page with vk news sources
+    """
+
+    template_name = 'core/vk_news.html'
+    model = VKGroup
+    paginate_by = 6
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['vk_source'] = True
+        return context_data
+
+
 class ToggleActiveKeyWorld(LoginRequiredMixin, View):
     """
     Toggle trigger word
     """
+
     def post(self, request):
         if request.is_ajax():
             word_id = request.POST.get('word_id', None)

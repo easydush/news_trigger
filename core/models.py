@@ -95,6 +95,9 @@ class VKGroup(models.Model):
     def __str__(self):
         return f'{self.name} - [{self.vk_id}]'
 
+    def link(self):
+        return f'https://vk.com/id{self.vk_id}'
+
     class Meta:
         ordering = ('name',)
 
@@ -117,7 +120,7 @@ class VKPost(models.Model):
     unchecked = UncheckedVKPost()
 
     def save(self, *args, **kwargs):
-        self.address = f'https://vk.com/{self.owner.id}_{self.id}'
+        self.address = f'https://vk.com/wall-{self.owner.vk_id}_{self.id}'
         super(VKPost, self).save(*args, **kwargs)
 
     class Meta:

@@ -118,10 +118,9 @@ def check_vk_news_for_trigger_words():
     for post in posts.iterator():
         text = post.text
         article_keywords_found_list = analyser.check_text(text)
-        print(article_keywords_found_list)
         if article_keywords_found_list:
             TriggerNews.objects.create(
-                title=post.id,
+                title=text[:200],
                 article_link=post.address,
                 description='',
                 news_type=TriggerNews.VK
