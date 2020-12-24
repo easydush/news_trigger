@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from celery import Celery
 from celery.schedules import crontab
@@ -27,7 +28,22 @@ app.conf.beat_schedule = {
         # every minute
         # todo: update time
         'schedule': crontab(minute='*/2'),
-    }
+    },
+    # update vk news
+    'add-update-vk-news': {
+        'task': 'core.tasks.update_vk_content',
+        # every 5 min
+        # todo: update time
+        'schedule': crontab(minute='*/2'),
+    },
+    # task to check news for trigger words
+    'add-check-vk-news-for-trigger-words': {
+        'task': 'core.tasks.check_vk_news_for_trigger_words',
+        # every minute
+        # todo: update time
+        'schedule': crontab(minute='*/2'),
+    },
+
 }
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
