@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.db.models import Q
 
 from core.models import YandexNewsTopic, YandexNewsItem, TriggerPhrase, TriggerNews, VKPost
+from core.text_tone.TextToneAnalyser import TextToneAnalyser, POSITIVE, NEUTRAL, NEGATIVE
 from core.util.SiteParser import SiteParser
 from core.util.ArticleAnalyser import ArticleAnalyser
 from core.vk.vk_parser import VKParser
@@ -24,7 +25,7 @@ def update_news_items():
 
     # test stuff
     # ToDo: add all topics
-    test_topic = YandexNewsTopic.objects.get(id=1)
+    test_topic = YandexNewsTopic.objects.get(id=3)
     topics.append(test_topic)
     # end test
 
@@ -62,6 +63,8 @@ def check_yandex_news_for_trigger_words():
     trigger_phrase = TriggerPhrase.objects.filter(is_active=True)
     # add keywords
     analyser.add_keywords(trigger_phrase)
+    # text Tone Analyser
+    tone = TextToneAnalyser()
 
     for article in news.iterator():
         # get raw article text and article name
@@ -70,13 +73,28 @@ def check_yandex_news_for_trigger_words():
 
         article_keywords_found_list = analyser.check_text(raw_text)
         article_name_keywords_found_list = analyser.check_text(article_name)
+
         if article_keywords_found_list or article_name_keywords_found_list:
+            # calculate tone
+            tone_result = tone.get_text_tone([raw_text])
+            tone_max_type = tone.get_max_text_tone_type(tone_result)
+
+            # check news tone result
+            if tone_max_type == POSITIVE:
+                news_tone = TriggerNews.POSITIVE
+            elif tone_max_type == NEGATIVE:
+                news_tone = TriggerNews.NEGATIVE
+            else:
+                news_tone = TriggerNews.NEUTRAL
+
             trigger_news = TriggerNews(
                 title=article.title,
                 article_link=article.link,
                 description='',
                 rate=0,
-                news_type=TriggerNews.YANDEX
+                news_type=TriggerNews.YANDEX,
+                tone_type=news_tone,
+                tone_value=tone_result.get(tone_max_type)
             )
             trigger_news.save()
             if article_keywords_found_list:
@@ -90,9 +108,8 @@ def check_yandex_news_for_trigger_words():
                 for word in article_name_words:
                     trigger_news.trigger_word.add(word)
             trigger_news.save()
-            print(trigger_news.trigger_word)
 
-        logger.warning(f'Trigger: [{article.hash}] {article.title}')
+            logger.warning(f'Trigger: [{article.hash}] [{tone_max_type}] {article.title}')
 
         # update article
         article.checked = True
@@ -115,17 +132,33 @@ def check_vk_news_for_trigger_words():
     trigger_phrase = TriggerPhrase.objects.filter(is_active=True)
     # add keywords
     analyser.add_keywords(trigger_phrase)
+    # text Tone Analyser
+    tone = TextToneAnalyser()
     for post in posts.iterator():
         text = post.text
         article_keywords_found_list = analyser.check_text(text)
         if article_keywords_found_list:
+            # calculate tone
+            tone_result = tone.get_text_tone([text])
+            tone_max_type = tone.get_max_text_tone_type(tone_result)
+
+            # check news tone result
+            if tone_max_type == POSITIVE:
+                news_tone = TriggerNews.POSITIVE
+            elif tone_max_type == NEGATIVE:
+                news_tone = TriggerNews.NEGATIVE
+            else:
+                news_tone = TriggerNews.NEUTRAL
+
             TriggerNews.objects.create(
                 title=text[:200],
                 article_link=post.address,
                 description='',
-                news_type=TriggerNews.VK
+                news_type=TriggerNews.VK,
+                tone_type=news_tone,
+                tone_value=tone_result.get(tone_max_type)
             )
-            logger.warning(f'Trigger: {post.id}')
+            logger.warning(f'Trigger: [{tone_max_type}] post id: {post.id}')
         post.checked = True
         post.save()
         logger.info(f'VK: {post.id} has been checked')

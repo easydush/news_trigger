@@ -1,3 +1,5 @@
+dostoevsky
+numpy==1.19.3
 django-filter
 amqp==2.6.0
 asgiref==3.2.10
