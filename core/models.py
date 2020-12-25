@@ -96,7 +96,7 @@ class VKGroup(models.Model):
         return f'{self.name} - [{self.vk_id}]'
 
     def link(self):
-        return f'https://vk.com/id{self.vk_id}'
+        return f'https://vk.com/public{self.vk_id}'
 
     class Meta:
         ordering = ('name',)
