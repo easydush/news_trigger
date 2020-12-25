@@ -49,12 +49,13 @@
                 const is_active = $(this).is(':checked') ? 'True' : 'False';
 
                 const data = {
-                    'word_id': key_word_id,
+                    'type': 'word',
+                    'key_id': key_word_id,
                     'is_active': is_active,
                 };
 
                 $.ajax({
-                    url: '{% url 'core:toggle_active_keyword' %}',
+                    url: '{% url 'core:toggle_active_key' %}',
                     method: 'POST',
                     data: data,
                     content_type: 'application/json',

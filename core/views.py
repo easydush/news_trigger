@@ -90,18 +90,27 @@ class VKNewsSource(LoginRequiredMixin, ListView):
         return context_data
 
 
-class ToggleActiveKeyWorld(LoginRequiredMixin, View):
+class ToggleActiveKey(LoginRequiredMixin, View):
     """
     Toggle trigger word
     """
 
     def post(self, request):
         if request.is_ajax():
-            word_id = request.POST.get('word_id', None)
+            key_id = request.POST.get('key_id', None)
+            key_type = request.POST.get('type', None)
             is_active = request.POST.get('is_active', None)
-            key_word = TriggerPhrase.objects.get(id=word_id)
-            key_word.is_active = is_active
-            key_word.save()
-
+            keyword = None
+            if key_type == 'word':
+                keyword = TriggerPhrase.objects.get(id=key_id)
+            elif key_type == 'yandex':
+                keyword = YandexNewsTopic.objects.get(id=key_id)
+            elif key_type == 'vk':
+                keyword = VKGroup.objects.get(id=key_id)
+            try:
+                keyword.is_active = is_active
+                keyword.save()
+            except AttributeError:
+                pass
             data = {'status': 'ok'}
             return HttpResponse(json.dumps(data), content_type='application/json')

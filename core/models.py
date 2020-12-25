@@ -12,6 +12,7 @@ class UncheckedYandexNewsItem(models.Manager):
 class YandexNewsTopic(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     rss_url = models.URLField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name} - [{self.rss_url}]'
@@ -91,6 +92,7 @@ class VKGroup(models.Model):
     verified = models.BooleanField(default=False)
     site = models.CharField(max_length=MAX_LENGTH, null=True)
     photo_100 = models.CharField(max_length=MAX_LENGTH)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name} - [{self.vk_id}]'

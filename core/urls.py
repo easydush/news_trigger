@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.views import HomeView, NewsView, KeyWords, YandexNewsSource, ToggleActiveKeyWorld, VKNewsSource
+from core.views import HomeView, NewsView, KeyWords, YandexNewsSource, ToggleActiveKey, VKNewsSource
 
 app_name = 'core'
 urlpatterns = [
@@ -11,5 +11,5 @@ urlpatterns = [
     path('vk-source/', VKNewsSource.as_view(), name='vk_source'),
 
     # ajax
-    path('toggle_active_keyword/', ToggleActiveKeyWorld.as_view(), name='toggle_active_keyword')
+    path('toggle_active_key/', ToggleActiveKey.as_view(), name='toggle_active_key')
 ]
