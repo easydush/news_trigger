@@ -185,6 +185,14 @@ body {
     color: black;
 }
 
-.tone-type-icon{
+.tone-type-icon {
     width: 20px;
+}
+
+.trigger-word-tag {
+    color: #f5222d;
+    background: #fff1f0;
+    border-color: #ffa39e;
+    border: solid 1px;
+    padding: 2px 7px;
 }

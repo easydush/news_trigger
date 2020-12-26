@@ -150,7 +150,7 @@ def check_vk_news_for_trigger_words():
             else:
                 news_tone = TriggerNews.NEUTRAL
 
-            TriggerNews.objects.create(
+            trigger_news = TriggerNews(
                 title=text[:200],
                 article_link=post.address,
                 description='',
@@ -158,6 +158,13 @@ def check_vk_news_for_trigger_words():
                 tone_type=news_tone,
                 tone_value=tone_result.get(tone_max_type)
             )
+            trigger_news.save()
+            if article_keywords_found_list:
+                article_words = TriggerPhrase.objects.filter(
+                    reduce(or_, [Q(name=word) for word in article_keywords_found_list]))
+                for word in article_words:
+                    trigger_news.trigger_word.add(word)
+            trigger_news.save()
             logger.warning(f'Trigger: [{tone_max_type}] post id: {post.id}')
         post.checked = True
         post.save()

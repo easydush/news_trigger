@@ -36,12 +36,17 @@
                         {% elif article.tone_type == 1 %}
                             <img class="tone-type-icon" src="{% static 'core/icons/negative.png' %}"
                                  alt="Tone type icon">
-                            <span>Негативно: {%percent article.tone_value %}%</span>
+                            <span>Негативно: {% percent article.tone_value %}%</span>
                         {% else %}
                             <img class="tone-type-icon" src="{% static 'core/icons/need_attention.png' %}"
                                  alt="Tone type icon">
                             <span>Требует внимания: {% percent article.tone_value %}%</span>
                         {% endif %}
+                    </div>
+                    <div >
+                        {% for word in article.trigger_word.all %}
+                            <span class="trigger-word-tag">{{ word }}</span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
