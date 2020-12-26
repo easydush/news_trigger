@@ -51,6 +51,18 @@ class TriggerNews(models.Model):
         (YANDEX, 0),
         (VK, 1)
     )
+    POSITIVE = 0
+    NEGATIVE = 1
+    SKIP = 2
+    NEUTRAL = 3
+    UNKNOWN = 4
+    TONE_TYPE_CHOICES = (
+        (POSITIVE, 0),
+        (NEGATIVE, 1),
+        (SKIP, 2),
+        (NEUTRAL, 3),
+        (UNKNOWN, 4),
+    )
     title = models.CharField(max_length=300)
     article_link = models.URLField()
     last_update = models.DateTimeField(auto_now=True)
@@ -58,6 +70,8 @@ class TriggerNews(models.Model):
     rate = models.PositiveIntegerField(default=0)
     trigger_word = models.ManyToManyField(TriggerPhrase)
     news_type = models.IntegerField(choices=NEWS_TYPE_CHOICES, default=YANDEX)
+    tone_type = models.SmallIntegerField(choices=TONE_TYPE_CHOICES, default=NEUTRAL)
+    tone_value = models.FloatField(default=1.0)
 
     def __str__(self):
         return f'{self.title} [{self.rate}] [type - {self.news_type}]- [{self.article_link}]'

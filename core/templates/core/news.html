@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
+{% load percent %}
 {% block title %}
     Главная страница
 {% endblock %}
@@ -8,21 +9,40 @@
     <div class="main" id="main">
 
         {% for article in object_list %}
-            <div class="shadow p-3 m-4 news-block rounded">
-                <h3 class="font-weight-normal">{{ article.title }}</h3>
-                <h5><a href="{{ article.article_link }}">Ссылка на статью</a></h5>
-                <p>{{ article.last_update }}</p>
-                <div class="d-flex" style="height: 20px">
-                    <p class="{% if article.news_type == 0 %}
+            <div class="shadow p-3 m-4 news-block rounded row">
+                <div class="col-9">
+                    <h4 class="font-weight-normal">{{ article.title }}</h4>
+                    <h5><a href="{{ article.article_link }}">Ссылка на статью</a></h5>
+                    <p>{{ article.last_update }}</p>
+                </div>
+                <div class="">
+                    <div class="d-flex my-2" style="height: 20px">
+                        <p class="{% if article.news_type == 0 %}
                         yandex-circle
                     {% else %}
                         vk-circle
                     {% endif %} mr-2"></p>
-                    <p>{% if article.news_type == 0 %}
-                        Яндекс новости
-                    {% else %}
-                        Вконтакте
-                    {% endif %} </p>
+                        <p>{% if article.news_type == 0 %}
+                            Яндекс новости
+                        {% else %}
+                            Вконтакте
+                        {% endif %} </p>
+                    </div>
+                    <div class="my-2">
+                        {% if article.tone_type == 0 %}
+                            <img class="tone-type-icon" src="{% static 'core/icons/positive.png' %}"
+                                 alt="Tone type icon">
+                            <span>Положительно: {% percent article.tone_value %}%</span>
+                        {% elif article.tone_type == 1 %}
+                            <img class="tone-type-icon" src="{% static 'core/icons/negative.png' %}"
+                                 alt="Tone type icon">
+                            <span>Негативно: {%percent article.tone_value %}%</span>
+                        {% else %}
+                            <img class="tone-type-icon" src="{% static 'core/icons/need_attention.png' %}"
+                                 alt="Tone type icon">
+                            <span>Требует внимания: {% percent article.tone_value %}%</span>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
