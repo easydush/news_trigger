@@ -8,12 +8,12 @@ class SiteParser:
     """
 
     def __init__(self):
-        self.__headers = {
+        self._headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'
         }
 
     def get_article_text(self, link):
-        result = requests.get(link, headers=self.__headers)
+        result = requests.get(link, headers=self._headers)
         result_page = result.text.encode('utf8')
         soup = BeautifulSoup(result_page, features='lxml')
 
