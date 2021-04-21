@@ -15,6 +15,7 @@ from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.urls import reverse_lazy
+import django_heroku
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -134,3 +135,5 @@ AUTH_USER_MODEL = 'user.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
 LOGIN_REDIRECT_URL = reverse_lazy('core:home')
+# Activate Django-Heroku.
+django_heroku.settings(locals())
