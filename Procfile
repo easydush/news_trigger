@@ -1,1 +1,0 @@
-web: gunicorn news_trigger.wsgi
