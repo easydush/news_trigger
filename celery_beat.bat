@@ -1,1 +1,1 @@
-celery beat -A news_trigger -l info
+celery -A news_trigger beat -l info
