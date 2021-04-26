@@ -25,7 +25,7 @@ def update_news_items():
 
     # test stuff
     # ToDo: add all topics
-    test_topic = YandexNewsTopic.objects.get(id=3)
+    test_topic = YandexNewsTopic.objects.all()
     topics.append(test_topic)
     # end test
 
