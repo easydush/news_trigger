@@ -24,7 +24,7 @@ class YandexNewsTopic(models.Model):
 
 class YandexNewsItem(models.Model):
     title = models.CharField(max_length=300)
-    link = models.URLField()
+    link = models.URLField(max_length=350)
     pub_date = models.DateTimeField()
     hash = models.CharField(max_length=100, unique=True)
     checked = models.BooleanField(default=False)
