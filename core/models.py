@@ -10,7 +10,7 @@ class UncheckedYandexNewsItem(models.Manager):
 
 
 class YandexNewsTopic(models.Model):
-    name = models.CharField(max_length=350, db_index=True)
+    name = models.CharField(max_length=500, db_index=True)
     rss_url = models.URLField()
     is_active = models.BooleanField(default=True)
 
