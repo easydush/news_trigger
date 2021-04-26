@@ -25,8 +25,7 @@ def update_news_items():
 
     # test stuff
     # ToDo: add all topics
-    test_topic = YandexNewsTopic.objects.all()
-    topics.append(test_topic)
+    topics = YandexNewsTopic.objects.all()
     # end test
 
     parser = NewsItemDownloader()
