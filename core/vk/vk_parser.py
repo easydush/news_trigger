@@ -55,7 +55,7 @@ class VKParser:
                     new_post = VKPost(
                         id=post['id'],
                         owner=VKGroup.objects.get(vk_id=abs(post['owner_id'])),
-                        pub_date=datetime.fromtimestamp(post['date']),
+                        pub_date=post['date'],
                         text=post['text'],
                         comments=post['comments']['count'],
                         likes=post['likes']['count'],
@@ -63,7 +63,7 @@ class VKParser:
                         checked=False
                     )
                     new_post.save()
-                    logger.info(f'VK post by {new_post.owner} from {post['date']} has been saved')
+                    logger.info(f'VK post by {new_post.owner} from {post["date"]} has been saved')
                 except IntegrityError:
                     pass
 
