@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import Manager
 
@@ -65,7 +67,7 @@ class TriggerNews(models.Model):
     )
     title = models.CharField(max_length=300)
     article_link = models.URLField()
-    last_update = models.DateTimeField(auto_now=True)
+    last_update = models.DateTimeField(default=datetime.now)
     description = models.TextField(blank=True)
     rate = models.PositiveIntegerField(default=0)
     trigger_word = models.ManyToManyField(TriggerPhrase)
