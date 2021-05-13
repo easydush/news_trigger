@@ -24,7 +24,7 @@ class YandexNewsTopic(models.Model):
 
 class YandexNewsItem(models.Model):
     title = models.CharField(max_length=300)
-    link = models.URLField(max_length=350)
+    link = models.URLField(max_length=350, unique=True)
     pub_date = models.DateTimeField()
     hash = models.CharField(max_length=100, unique=True)
     checked = models.BooleanField(default=False)
@@ -123,8 +123,9 @@ class VKPost(models.Model):
     owner = models.ForeignKey(VKGroup, on_delete=models.CASCADE)
     address = models.SlugField(
         max_length=MAX_LENGTH,
-        null=True,
-        blank=True
+        null=False,
+        blank=False,
+        unique=True
     )
     pub_date = models.DateField()
     text = models.TextField(blank=True, null=True)

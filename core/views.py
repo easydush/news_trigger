@@ -8,16 +8,16 @@ from django.views.generic import TemplateView, ListView
 from core.models import TriggerNews, TriggerPhrase, YandexNewsTopic, VKGroup
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
-    """
-    Main page with all main information
-    """
-    template_name = 'core/home.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data['main_page'] = True
-        return context_data
+# class HomeView(LoginRequiredMixin, TemplateView):
+#     """
+#     Main page with all main information
+#     """
+#     template_name = 'core/home.html'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context_data = super().get_context_data(**kwargs)
+#         context_data['main_page'] = True
+#         return context_data
 
 
 class NewsView(LoginRequiredMixin, ListView):
