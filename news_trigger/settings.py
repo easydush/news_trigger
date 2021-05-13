@@ -145,4 +145,4 @@ CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
 AUTH_USER_MODEL = 'user.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
-LOGIN_REDIRECT_URL = reverse_lazy('core:home')
+LOGIN_REDIRECT_URL = reverse_lazy('core:news')
