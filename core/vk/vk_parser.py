@@ -49,20 +49,23 @@ class VKParser:
         posts = response['items']
         for post in posts:
             try:
-                new_post = VKPost(
-                    id=post['id'],
-                    owner=VKGroup.objects.get(vk_id=abs(post['owner_id'])),
-                    pub_date=datetime.fromtimestamp(post['date']),
-                    text=post['text'],
-                    comments=post['comments']['count'],
-                    likes=post['likes']['count'],
-                    reposts=post['reposts']['count'],
-                    checked=False
-                )
-                new_post.save()
-                logger.info(f'VK post by {new_post.owner} has been saved')
-            except IntegrityError:
-                pass
+                post = VKPost.objects.get(id=post['id'])
+            except VKPost.DoesNotExist:
+                try:
+                    new_post = VKPost(
+                        id=post['id'],
+                        owner=VKGroup.objects.get(vk_id=abs(post['owner_id'])),
+                        pub_date=datetime.fromtimestamp(post['date']),
+                        text=post['text'],
+                        comments=post['comments']['count'],
+                        likes=post['likes']['count'],
+                        reposts=post['reposts']['count'],
+                        checked=False
+                    )
+                    new_post.save()
+                    logger.info(f'VK post by {new_post.owner} has been saved')
+                except IntegrityError:
+                    pass
 
     def parse_groups(self):
         groups = VKSource.objects.values('vk_id').all()
