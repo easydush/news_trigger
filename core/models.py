@@ -77,7 +77,7 @@ class TriggerNews(models.Model):
         return f'{self.title} [{self.rate}] [type - {self.news_type}]- [{self.article_link}]'
 
     class Meta:
-        ordering = ('-last_update',)
+        ordering = ('-last_update', '-rate')
         verbose_name = 'Trigger news'
         verbose_name_plural = 'Trigger news'
 

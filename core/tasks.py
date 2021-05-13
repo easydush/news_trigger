@@ -155,7 +155,8 @@ def check_vk_news_for_trigger_words():
                 description='',
                 news_type=TriggerNews.VK,
                 tone_type=news_tone,
-                tone_value=tone_result.get(tone_max_type)
+                tone_value=tone_result.get(tone_max_type),
+                last_update=post.pub_date
             )
             trigger_news.save()
             if article_keywords_found_list:
