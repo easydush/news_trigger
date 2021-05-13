@@ -63,7 +63,7 @@ class VKParser:
                         checked=False
                     )
                     new_post.save()
-                    logger.info(f'VK post by {new_post.owner} has been saved')
+                    logger.info(f'VK post by {new_post.owner} from {post['date']} has been saved')
                 except IntegrityError:
                     pass
 
