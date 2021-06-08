@@ -1,1 +1,1 @@
-celery worker -A news_trigger -l info --pool=solo
+celery -A news_trigger worker -l info --pool=solo
